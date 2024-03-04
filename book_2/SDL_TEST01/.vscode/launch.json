@@ -1,0 +1,14 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "Debug",
+            "type": "lldb",
+            "request": "launch",
+            "program": "${workspaceFolder}/build/my_game", // デバッグする実行形式ファイルのパス
+            "args": [],
+            "cwd": "${workspaceFolder}",
+            "terminal": "integrated" // 統合ターミナルを利用
+        }
+    ]
+}
