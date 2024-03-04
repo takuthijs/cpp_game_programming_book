@@ -1,13 +1,24 @@
-#ifndef game_hpp
-#define game_hpp
+#ifndef GAME_HPP
+#define GAME_HPP
 
 #include <stdio.h>
-void setup();
-void input();
-void update();
-void draw();
+#include <iostream>
+#include <SDL2/SDL.h>
+
+class Game
+{
+private:
+     bool isRunniing;//ゲームがスタートしているかどうか
+     SDL_Window* window;
+public:
+     Game(/* args */);
+     ~Game();
+
+     int Setup();
+     void Input();
+     int Draw();
+     void Update();
+};
 
 
-
-
-#endif /* game_hpp */
+#endif /* GAME_HPP */
