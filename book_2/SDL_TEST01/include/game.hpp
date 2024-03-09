@@ -14,6 +14,9 @@ class Game
 {
 private:
      bool mIsRunniing; // ゲームがスタートしているかどうか
+     const int mFps;
+     int mPaddleDir;
+     Uint32 mTicksCount;
      SDL_Window *mWindow;
      SDL_Renderer *mRenderer;
 

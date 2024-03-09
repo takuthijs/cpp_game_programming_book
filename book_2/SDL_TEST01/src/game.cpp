@@ -3,6 +3,9 @@
 // コンストラクタ
 Game::Game() : 
 mIsRunniing(true),
+mFps(60),
+mPaddleDir(0),
+mTicksCount(0),
 mWidth(1024),
 mHeight(720),
 mThickness(15),
@@ -78,6 +81,16 @@ void Game::Input()
      {
           mIsRunniing = false;
      }
+
+     mPaddleDir = 0;
+     //パドルの移動方向
+     if(state[SDL_SCANCODE_W]){
+          mPaddleDir -= 1;
+     }
+
+     if(state[SDL_SCANCODE_S]){
+          mPaddleDir += 1;
+     }
 }
 
 void Game::Draw()
@@ -120,10 +133,30 @@ void Game::Update()
      std::cout << "Updating game state" << std::endl;
      while (Game::mIsRunniing)
      {
-          // ここにフレームに合わせた処理を書く
+          //前のフレームから16msが経過するまで待つ
+          while(!SDL_TICKS_PASSED(SDL_GetTicks(),mTicksCount + 1000/mFps));
+
+          float deltaTime = (SDL_GetTicks() - mTicksCount) / 1000.0f;
+          mTicksCount = SDL_GetTicks();
+
+          //デルタタイムの上限を設ける
+          if(deltaTime >0.05f){
+               deltaTime = 0.05f;
+          }
+
           Input();
+          //パドルの移動
+          if(mPaddleDir != 0)
+          {
+               mPaddlePos.y += mPaddleDir * 300.0f * deltaTime;
+               //パドルの移動制限
+               if(mPaddlePos.y > mHeight - mPaddleLength - mThickness)mPaddlePos.y = mHeight - mPaddleLength - mThickness;
+               if(mPaddlePos.y < 0 + mThickness)mPaddlePos.y = 0 + mThickness;
+          }
+
+          //ボールの移動
+
           Draw();
-          SDL_Delay(16);
      }
 }
 
