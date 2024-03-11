@@ -1,12 +1,10 @@
 #include "game.hpp"
 
-//コンストラクタ
 Game::Game() : isRunniing(true) {
      std::cout << "セットアップ開始" << std::endl;
      Setup();
 }
 
-//デストラクタ
 Game::~Game(){
      std::cout << "ゲーム終了" << std::endl;
 }
