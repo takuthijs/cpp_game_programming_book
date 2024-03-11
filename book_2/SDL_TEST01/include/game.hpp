@@ -2,6 +2,8 @@
 #define GAME_HPP
 
 #include <stdio.h>
+#include <algorithm>
+#include <vector>
 #include <iostream>
 #include <SDL2/SDL.h>
 
@@ -18,6 +20,7 @@ struct Ball{
 struct Paddle{
      Vector2 pos;
      int length;
+     int dir;
 };
 
 class Game
@@ -25,7 +28,6 @@ class Game
 private:
      bool mIsRunniing; // ゲームがスタートしているかどうか
      const int mFps;
-     int mPaddleDir;
      Uint32 mTicksCount;
      SDL_Window *mWindow;
      SDL_Renderer *mRenderer;
@@ -34,17 +36,14 @@ private:
      const int mHeight;//画面の高さ
 
      const int mThickness;//壁の厚みとボールの直径
-     const int mPaddleLength; //パドルの長さ
 
-     Vector2 mPaddlePos;//跳ね返す板
-     Vector2 mBallPos;//動き回るボール
-     Vector2 mBallvel;//ボールの移動量
+     std::vector<Ball> mBalls;//ボールのリスト
+     std::vector<Paddle> mPaddles;//パドルのリスト 
 
      void Input();
      void Draw();
 
      void DrawShape(int,int,int,int);//図形を描画する処理
-
 public:
      Game();
      ~Game();

@@ -4,17 +4,19 @@
 Game::Game() : 
 mIsRunniing(true),
 mFps(60),
-mPaddleDir(0),
 mTicksCount(0),
 mWidth(1024),
 mHeight(720),
-mThickness(15),
-mPaddleLength(200),
-mPaddlePos{static_cast<float>(mThickness),static_cast<float>(mHeight/2 - mPaddleLength/2)},
-mBallPos{static_cast<float>(mWidth/2),static_cast<float>(mHeight/2)},
-mBallvel{-200.0f,235.0f}
+mThickness(15)
 {
      std::cout << "セットアップ開始" << std::endl;
+     //パドルをリストに追加
+     mPaddles.push_back({{static_cast<float>(mThickness),static_cast<float>(mHeight/2 - 200/2)},200,0});
+     mPaddles.push_back({{static_cast<float>(mWidth - mThickness*2),static_cast<float>(mHeight/2 - 200/2)},200,0});
+
+     //ボールをリストに追加
+     mBalls.push_back({{static_cast<float>(mWidth/2),static_cast<float>(mHeight/2)},{-200.0f,235.0f}});
+     mBalls.push_back({{static_cast<float>(mWidth/2),static_cast<float>(mHeight/2)},{200.0f,-235.0f}});
 }
 
 // デストラクタ
@@ -83,15 +85,27 @@ void Game::Input()
           mIsRunniing = false;
      }
 
-     mPaddleDir = 0;
-     //パドルの移動方向
+     //方向リセット
+     mPaddles[0].dir = 0;
+     mPaddles[1].dir = 0;
+     //左側パドルの移動方向
      if(state[SDL_SCANCODE_W]){
-          mPaddleDir -= 1;
+          mPaddles[0].dir -= 1;
      }
 
      if(state[SDL_SCANCODE_S]){
-          mPaddleDir += 1;
+          mPaddles[0].dir += 1;
      }
+
+     //右側パドル移動方向
+     if(state[SDL_SCANCODE_I]){
+          mPaddles[1].dir -= 1;
+     }
+
+     if(state[SDL_SCANCODE_K]){
+          mPaddles[1].dir += 1;
+     }
+
 }
 
 void Game::Draw()
@@ -109,13 +123,10 @@ void Game::Draw()
      //DrawShape(mWidth-mThickness,0,mThickness,mHeight);//右壁
 
      //ボールの描画
-     DrawShape(static_cast<int>(mBallPos.x),static_cast<int>(mBallPos.y),mThickness,mThickness);
+     std::for_each(mBalls.begin() , mBalls.end(), [this](Ball ball){ DrawShape(static_cast<int>(ball.pos.x),static_cast<int>(ball.pos.y),mThickness,mThickness);});
      
-     //パドル左の描画
-     DrawShape(static_cast<int>(mPaddlePos.x),static_cast<int>(mPaddlePos.y),mThickness,mPaddleLength);
-
-     //パドル右の描画
-     DrawShape(static_cast<int>(mPaddlePos.x),static_cast<int>(mPaddlePos.y),mThickness,mPaddleLength);
+     //パドルの描画
+     std::for_each(mPaddles.begin() , mPaddles.end(), [this](Paddle paddle){DrawShape(static_cast<int>(paddle.pos.x),static_cast<int>(paddle.pos.y),mThickness,paddle.length);});
 
      SDL_RenderPresent(mRenderer);
 }
@@ -149,55 +160,71 @@ void Game::Update()
           }
 
           Input();
+          
           //パドルの移動
-          if(mPaddleDir != 0)
+          for (int i = 0; i < mPaddles.size(); i++)
           {
-               mPaddlePos.y += mPaddleDir * 300.0f * deltaTime;
-               //パドルの移動制限
-               if(mPaddlePos.y > mHeight - mPaddleLength - mThickness)mPaddlePos.y = mHeight - mPaddleLength - mThickness;
-               if(mPaddlePos.y < 0 + mThickness)mPaddlePos.y = 0 + mThickness;
+               if(mPaddles[i].dir != 0)
+               {
+                    mPaddles[i].pos.y += mPaddles[i].dir * 300.0f * deltaTime;
+                    //パドルの移動制限
+                    if(mPaddles[i].pos.y > mHeight - mPaddles[i].length - mThickness)mPaddles[i].pos.y = mHeight - mPaddles[i].length - mThickness;
+                    if(mPaddles[i].pos.y < mThickness)mPaddles[i].pos.y = mThickness;
+               }
           }
 
           //ボールの移動
-          mBallPos.x += mBallvel.x * deltaTime;
-          mBallPos.y += mBallvel.y * deltaTime;
+          for(int i = 0; i < mBalls.size();i++){
+               mBalls[i].pos.x += mBalls[i].vel.x * deltaTime;
+               mBalls[i].pos.y += mBalls[i].vel.y * deltaTime;
+               //壁に当たっていたらボールの位置を修正して向きを変える
+               //下壁
+               if(mBalls[i].pos.y > mHeight - mThickness-mThickness/2 && mBalls[i].pos.y > 0)
+               {
+                    mBalls[i].pos.y = mHeight - mThickness-mThickness/2;
+                    mBalls[i].vel.y *= -1;
+               }
+               //上壁
+               if(mBalls[i].pos.y < mThickness-mThickness/2 && mBalls[i].pos.y < 0)
+               {
+                    mBalls[i].pos.y = mThickness-mThickness/2;
+                    mBalls[i].vel.y *= -1;
+               }
 
-          //壁に当たっていたらボールの位置を修正して向きを変える
-          //右壁
-          if(mBallPos.x > mWidth-mThickness-mThickness/2 && mBallvel.x>0)
-          {
-               mBallPos.x = mWidth-mThickness-mThickness/2;
-               mBallvel.x *= -1;
-          }
-          //下壁
-          if(mBallPos.y > mHeight - mThickness-mThickness/2 && mBallvel.y > 0)
-          {
-               mBallPos.y = mHeight - mThickness-mThickness/2;
-               mBallvel.y *= -1;
-          }
-          //上壁
-          if(mBallPos.y < mThickness-mThickness/2 && mBallvel.y < 0)
-          {
-               mBallPos.y = mThickness-mThickness/2;
-               mBallvel.y *= -1;
-          }
-          //パドルに当たったかどうか
-          if(mBallPos.x <= mPaddlePos.x + mThickness
-          && mBallPos.x >= mPaddlePos.x 
-          && mPaddlePos.y + mPaddleLength >= mBallPos.y 
-          && mPaddlePos.y <= mBallPos.y 
-          && mBallvel.x < 0)
-          {
-               mBallvel.x *= -1;
-          }
+               //左パドルに当たったかどうか
+               if(mBalls[i].pos.x <= mPaddles[0].pos.x + mThickness
+               && mBalls[i].pos.x >= mPaddles[0].pos.x 
+               && mPaddles[0].pos.y + mPaddles[0].length >= mBalls[i].pos.y 
+               && mPaddles[0].pos.y <= mBalls[i].pos.y 
+               && mBalls[i].vel.x < 0)
+               {
+                    mBalls[i].vel.x *= -1;
+               }
 
-          //もし間に合わなかった場合は初期位置からスタート
-          if(mBallPos.x < -mWidth /4)
-          {
-               mBallPos = {static_cast<float>(mWidth/2),static_cast<float>(mHeight/2)};
-               mBallvel = {-200.0f,235.0f};
-          }
+               //右パドルに当たったかどうか
+               if(mBalls[i].pos.x + mThickness <= mPaddles[1].pos.x 
+               && mBalls[i].pos.x + mThickness >= mPaddles[1].pos.x 
+               && mPaddles[1].pos.y + mPaddles[1].length >= mPaddles[1].pos.y 
+               && mPaddles[1].pos.y <= mPaddles[1].pos.y 
+               && mBalls[i].vel.x > 0)
+               {
+                    mBalls[i].vel.x *= -1;
+               }
 
+               //ボールが範囲外に行った場合、ボールを削除
+               if(mBalls[i].pos.x < -mWidth /4 || mBalls[i].pos.x > mWidth + mWidth /4 )
+               {
+                    auto it = mBalls.begin()+i;
+                    mBalls.erase(it, mBalls.end());
+               }
+               //右壁
+               // if(mBallPos.x > mWidth-mThickness-mThickness/2 && mBallvel.x>0)
+               // {
+               //      mBallPos.x = mWidth-mThickness-mThickness/2;
+               //      mBallvel.x *= -1;
+               // }
+          }
+          
           Draw();
      }
 }
