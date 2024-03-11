@@ -3,7 +3,11 @@
 int main(){
 
     Game game;
-    game.Update();
 
+    if(game.Initialize()){
+        game.Update();
+    }
+
+    game.Shutdown();
     return 0;
 }
