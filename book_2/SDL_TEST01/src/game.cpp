@@ -11,7 +11,8 @@ mHeight(720),
 mThickness(15),
 mPaddleLength(200),
 mPaddlePos{static_cast<float>(mThickness),static_cast<float>(mHeight/2 - mPaddleLength/2)},
-mBallPos{static_cast<float>(mWidth/2),static_cast<float>(mHeight/2)}
+mBallPos{static_cast<float>(mWidth/2),static_cast<float>(mHeight/2)},
+mBallvel{-200.0f,235.0f}
 {
      std::cout << "セットアップ開始" << std::endl;
 }
@@ -98,19 +99,22 @@ void Game::Draw()
      // std::cout << "Drawing the game" << std::endl;
 
      //背景の描画
-     SDL_SetRenderDrawColor(mRenderer,0,0,255,255);
+     SDL_SetRenderDrawColor(mRenderer,34,139,34,255);
      SDL_RenderClear(mRenderer);
      
      //壁の描画
      DrawShape(0,0,mWidth,mThickness);//上壁
      DrawShape(0,mHeight-mThickness,mWidth,mThickness);//下壁
      //DrawShape(0,0,mThickness,mHeight);//左壁
-     DrawShape(mWidth-mThickness,0,mThickness,mHeight);//右壁
+     //DrawShape(mWidth-mThickness,0,mThickness,mHeight);//右壁
 
      //ボールの描画
      DrawShape(static_cast<int>(mBallPos.x),static_cast<int>(mBallPos.y),mThickness,mThickness);
      
-     //制御板の描画
+     //パドル左の描画
+     DrawShape(static_cast<int>(mPaddlePos.x),static_cast<int>(mPaddlePos.y),mThickness,mPaddleLength);
+
+     //パドル右の描画
      DrawShape(static_cast<int>(mPaddlePos.x),static_cast<int>(mPaddlePos.y),mThickness,mPaddleLength);
 
      SDL_RenderPresent(mRenderer);
@@ -155,6 +159,44 @@ void Game::Update()
           }
 
           //ボールの移動
+          mBallPos.x += mBallvel.x * deltaTime;
+          mBallPos.y += mBallvel.y * deltaTime;
+
+          //壁に当たっていたらボールの位置を修正して向きを変える
+          //右壁
+          if(mBallPos.x > mWidth-mThickness-mThickness/2 && mBallvel.x>0)
+          {
+               mBallPos.x = mWidth-mThickness-mThickness/2;
+               mBallvel.x *= -1;
+          }
+          //下壁
+          if(mBallPos.y > mHeight - mThickness-mThickness/2 && mBallvel.y > 0)
+          {
+               mBallPos.y = mHeight - mThickness-mThickness/2;
+               mBallvel.y *= -1;
+          }
+          //上壁
+          if(mBallPos.y < mThickness-mThickness/2 && mBallvel.y < 0)
+          {
+               mBallPos.y = mThickness-mThickness/2;
+               mBallvel.y *= -1;
+          }
+          //パドルに当たったかどうか
+          if(mBallPos.x <= mPaddlePos.x + mThickness
+          && mBallPos.x >= mPaddlePos.x 
+          && mPaddlePos.y + mPaddleLength >= mBallPos.y 
+          && mPaddlePos.y <= mBallPos.y 
+          && mBallvel.x < 0)
+          {
+               mBallvel.x *= -1;
+          }
+
+          //もし間に合わなかった場合は初期位置からスタート
+          if(mBallPos.x < -mWidth /4)
+          {
+               mBallPos = {static_cast<float>(mWidth/2),static_cast<float>(mHeight/2)};
+               mBallvel = {-200.0f,235.0f};
+          }
 
           Draw();
      }

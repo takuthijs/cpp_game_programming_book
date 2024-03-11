@@ -10,6 +10,16 @@ struct Vector2{
      float y;
 };
 
+struct Ball{
+     Vector2 pos;
+     Vector2 vel;
+};
+
+struct Paddle{
+     Vector2 pos;
+     int length;
+};
+
 class Game
 {
 private:
@@ -28,6 +38,7 @@ private:
 
      Vector2 mPaddlePos;//跳ね返す板
      Vector2 mBallPos;//動き回るボール
+     Vector2 mBallvel;//ボールの移動量
 
      void Input();
      void Draw();
