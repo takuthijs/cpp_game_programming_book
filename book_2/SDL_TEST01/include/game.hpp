@@ -4,6 +4,7 @@
 #include <stdio.h>
 #include <algorithm>
 #include <vector>
+#include <random>
 #include <iostream>
 #include <SDL2/SDL.h>
 

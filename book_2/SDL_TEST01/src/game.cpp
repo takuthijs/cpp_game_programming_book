@@ -48,7 +48,7 @@ bool Game::Initialize()
      mRenderer = SDL_CreateRenderer(
          mWindow,                                             // 描画する対象のウィンドウ
          -1,                                                  // ウィンドウが今回は一つなのでデフォルトの-1
-         SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC // 垂直同期を有効にする（バッファを入れ替えるやつ）
+         SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC // 垂直同期を有効にする（描画中のものが描画し終わるまで次のフレームに入れ替えないやつ）
      );
 
      if (mRenderer == NULL)
@@ -66,6 +66,7 @@ void Game::Input()
 
      // キューにイベントがあれば繰り返し
      // ウィンドウのxボタンとか
+     bool addBall = false;
      while (SDL_PollEvent(&event))
      {
           switch (event.type)
@@ -73,6 +74,16 @@ void Game::Input()
           case SDL_QUIT:
                mIsRunniing = false;
                break;
+          case SDL_KEYDOWN:
+               if (event.key.keysym.scancode == SDL_SCANCODE_SPACE) {
+                    addBall = true;
+               }
+               break;
+          case SDL_KEYUP:
+               if (event.key.keysym.scancode == SDL_SCANCODE_SPACE) {
+                    addBall = false;
+                }
+                break;
           default:
                break;
           }
@@ -104,6 +115,21 @@ void Game::Input()
 
      if(state[SDL_SCANCODE_K]){
           mPaddles[1].dir += 1;
+     }
+
+     //スペースボタンでボール追加
+     if(state[SDL_SCANCODE_SPACE]){
+          // 乱数エンジンの生成
+          std::random_device rd;
+          std::mt19937 gen(rd());
+          std::uniform_real_distribution<float> distX(-100.0f, 300.0f);
+          std::uniform_real_distribution<float> distY(-100.0f, 300.0f);
+
+          if(addBall){
+               // ランダムな位置と速度を生成してボールを追加
+               mBalls.push_back({{static_cast<float>(mWidth / 2), static_cast<float>(mHeight / 2)},{distX(gen), distY(gen)}});
+               addBall = false;
+          }
      }
 
 }
@@ -202,10 +228,10 @@ void Game::Update()
                }
 
                //右パドルに当たったかどうか
-               if(mBalls[i].pos.x + mThickness <= mPaddles[1].pos.x 
+               if(mBalls[i].pos.x <= mPaddles[1].pos.x
                && mBalls[i].pos.x + mThickness >= mPaddles[1].pos.x 
-               && mPaddles[1].pos.y + mPaddles[1].length >= mPaddles[1].pos.y 
-               && mPaddles[1].pos.y <= mPaddles[1].pos.y 
+               && mPaddles[1].pos.y + mPaddles[1].length >= mBalls[i].pos.y 
+               && mPaddles[1].pos.y <= mBalls[i].pos.y 
                && mBalls[i].vel.x > 0)
                {
                     mBalls[i].vel.x *= -1;
@@ -215,7 +241,7 @@ void Game::Update()
                if(mBalls[i].pos.x < -mWidth /4 || mBalls[i].pos.x > mWidth + mWidth /4 )
                {
                     auto it = mBalls.begin()+i;
-                    mBalls.erase(it, mBalls.end());
+                    mBalls.erase(it);
                }
                //右壁
                // if(mBallPos.x > mWidth-mThickness-mThickness/2 && mBallvel.x>0)
