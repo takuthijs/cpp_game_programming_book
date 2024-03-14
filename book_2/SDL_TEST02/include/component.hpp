@@ -1,6 +1,8 @@
 #ifndef COMPONENT_HPP
 #define COMPONENT_HPP
 
+class Actor;
+
 class Component
 {
 public:
@@ -20,11 +22,4 @@ protected:
      int mUpdateOrder;
 };
 
-Component::Component(Actor* owner,int updateOrder)
-{
-}
-
-Component::~Component()
-{
-}
 #endif /* COMPONENT_HPP */

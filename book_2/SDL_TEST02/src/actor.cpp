@@ -11,6 +11,21 @@ Actor::~Actor()
      mGame->RemoveActor(this);
 }
 
-void Actor::Update(float deltaTime){
+void Actor:: Update(float deltaTime){
+
+}
+
+void Actor:: UpdateActor(float deltaTime){
+     
+}
+
+void Actor::UpdateComponent(float deltaTime){
+
+}
+
+void Actor:: AddComponent(class Component* component){
+
+}
+void Actor:: RemoveComponent(class Component* component){
 
 }

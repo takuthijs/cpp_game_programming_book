@@ -30,6 +30,12 @@ bool Game::Initialize()
           return false;
      }
 
+     // SDL 画像初期化
+     if (IMG_Init(IMG_INIT_PNG) < 0){
+          printf("SDL could not initialize! SDL_IMG_Error: %s\n", SDL_GetError());
+          return false;
+     }
+
      // ウィンドウの作成
      mWindow = SDL_CreateWindow("SDL Window", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, mWidth, mHeight, SDL_WINDOW_SHOWN);
      if (mWindow == NULL){ // もし失敗するとnullptrになるらしい
@@ -194,4 +200,25 @@ void Game::DrawShape(int x ,int y,int width,int height)
           height//図形の高さ
      };
      SDL_RenderFillRect(mRenderer,&shape);
+}
+
+//イメージをロードする処理
+SDL_Texture* Game::LoadImage(const char* fileName){
+     //画像をファイルからロードする
+     //成功したらSDL_Surfaceのポインタ、失敗したらnullptrを返す
+     SDL_Surface* surf = IMG_Load(fileName);
+     if(!surf){
+          //テクスチャファイルのロードに失敗
+          SDL_Log("Failed to load texture file %s",fileName);
+          return nullptr;
+     }
+     SDL_Texture* texture = SDL_CreateTextureFromSurface(mRenderer,surf);
+     SDL_FreeSurface(surf);
+     if(!texture){
+          //テクスチャへの変換に失敗
+          SDL_Log("Failed to convert surface to texture for %s",fileName);
+          return nullptr;
+     }
+
+     return texture;
 }

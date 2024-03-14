@@ -5,6 +5,7 @@
 #include "game.hpp"
 
 class Game;
+class Component;
 
 struct Vector2{
      float x;

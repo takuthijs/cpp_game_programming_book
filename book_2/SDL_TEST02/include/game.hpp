@@ -6,12 +6,10 @@
 #include <vector>
 #include <iostream>
 #include <SDL2/SDL.h>
-#include "Actor.hpp"
+#include <SDL2/SDL_image.h>
 
-struct Vector2{
-     float x;
-     float y;
-};
+#include "actor.hpp"
+
 
 class Actor;
 
@@ -35,6 +33,7 @@ private:
      void Draw();
 
      void DrawShape(int,int,int,int);//図形を描画する処理
+     SDL_Texture* LoadImage(const char* fileName);//イメージをロードする
 public:
      Game();
      ~Game();
