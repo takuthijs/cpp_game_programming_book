@@ -66,7 +66,6 @@ void Game::Input()
 
      // キューにイベントがあれば繰り返し
      // ウィンドウのxボタンとか
-     bool addBall = false;
      while (SDL_PollEvent(&event))
      {
           switch (event.type)
@@ -74,16 +73,6 @@ void Game::Input()
           case SDL_QUIT:
                mIsRunniing = false;
                break;
-          case SDL_KEYDOWN:
-               if (event.key.keysym.scancode == SDL_SCANCODE_SPACE) {
-                    addBall = true;
-               }
-               break;
-          case SDL_KEYUP:
-               if (event.key.keysym.scancode == SDL_SCANCODE_SPACE) {
-                    addBall = false;
-                }
-                break;
           default:
                break;
           }
@@ -125,11 +114,8 @@ void Game::Input()
           std::uniform_real_distribution<float> distX(-100.0f, 300.0f);
           std::uniform_real_distribution<float> distY(-100.0f, 300.0f);
 
-          if(addBall){
-               // ランダムな位置と速度を生成してボールを追加
-               mBalls.push_back({{static_cast<float>(mWidth / 2), static_cast<float>(mHeight / 2)},{distX(gen), distY(gen)}});
-               addBall = false;
-          }
+          // ランダムな位置と速度を生成してボールを追加
+          mBalls.push_back({{static_cast<float>(mWidth / 2), static_cast<float>(mHeight / 2)},{distX(gen), distY(gen)}});
      }
 
 }

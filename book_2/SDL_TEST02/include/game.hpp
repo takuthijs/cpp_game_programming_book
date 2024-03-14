@@ -6,22 +6,14 @@
 #include <vector>
 #include <iostream>
 #include <SDL2/SDL.h>
+#include "Actor.hpp"
 
 struct Vector2{
      float x;
      float y;
 };
 
-struct Ball{
-     Vector2 pos;
-     Vector2 vel;
-};
-
-struct Paddle{
-     Vector2 pos;
-     int length;
-     int dir;
-};
+class Actor;
 
 class Game
 {
@@ -35,10 +27,9 @@ private:
      const int mWidth;//画面幅
      const int mHeight;//画面の高さ
 
-     const int mThickness;//壁の厚みとボールの直径
-
-     std::vector<Ball> mBalls;//ボールのリスト
-     std::vector<Paddle> mPaddles;//パドルのリスト 
+     bool mUpdatingActors;//アクターの更新処理を行なっているかどうか
+     std::vector<class Actor*> mActors;//実際に処理を行うアクター
+     std::vector<class Actor*> mPendingActors;//追加などを行うアクター、mActorの処理が完了したらmActorsに追加する
 
      void Input();
      void Draw();
@@ -50,6 +41,10 @@ public:
      bool Initialize();
      void Update();
      void Shutdown();
+
+     //アクターを受け取る処理
+     void AddActor(Actor* actor);
+     void RemoveActor(Actor* actor);
 };
 
 #endif /* GAME_HPP */
