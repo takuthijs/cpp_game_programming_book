@@ -1,7 +1,7 @@
 #ifndef COMPONENT_HPP
 #define COMPONENT_HPP
 
-class Actor;
+#include "actor.hpp"
 
 class Component
 {
@@ -13,7 +13,7 @@ public:
      virtual ~Component();
      //このコンポーネントをデルタタイムで更新する
      virtual void Update(float deltaTime);
-     int UpdateOrder()const {return mUpdateOrder;};
+     int GetUpdateOrder()const {return mUpdateOrder;};
 
 protected:
      //所有アクター

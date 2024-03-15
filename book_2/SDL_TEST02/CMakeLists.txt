@@ -24,6 +24,7 @@ set(SOURCE_FILES
      src/actor.cpp
      src/component.cpp
      src/spriteComponent.cpp
+     src/Math.cpp
 )
 
 # ヘッダファイルのリストを作成
@@ -32,6 +33,7 @@ set(HEADER_FILES
      include/actor.hpp
      include/component.hpp
      include/spriteComponent.hpp
+     include/Math.hpp
 )
 
 # 実行可能ファイルのビルド設定

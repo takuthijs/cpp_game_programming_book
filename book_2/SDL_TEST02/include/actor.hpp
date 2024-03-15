@@ -2,15 +2,7 @@
 #define ACTOR_HPP
 #include <stdio.h>
 #include <vector>
-#include "game.hpp"
-
-class Game;
-class Component;
-
-struct Vector2{
-     float x;
-     float y;
-};
+#include "Math.hpp"
 
 class Actor
 {
@@ -21,13 +13,13 @@ public:
           EDead
      };
      //コンストラクターとデストラクター
-     Actor(Game* game);
+     Actor(class Game* game);
      virtual ~Actor();
 
      //ゲームから呼び出される更新関数(オーバーライド不可)
      void Update(float deltaTime);
      //アクターがもつ全コンポーネントを更新(オーバーライド不可)
-     void UpdateComponent(float deltaTime);
+     void UpdateComponents(float deltaTime);
      //アクター独自の更新処理(オーバーライド可能)
      virtual void UpdateActor(float deltaTime);
 
@@ -44,6 +36,7 @@ public:
      float GetRotation() const {return mRotation;}
      void SetRotation(float value) {mRotation = value;}
      
+     Game* GetGame() const {return mGame;}
 
      //コンポーネントの追加・削除
      void AddComponent(class Component* component);
@@ -57,7 +50,7 @@ private:
      float mScale;//アクターのスケール（1.0fが100%）
      float mRotation;//回転の角度（ラジアン）
      //アクターが持つコンポーネント
-     std::vector<class Component*> mConponent;
+     std::vector<class Component*> mComponents;
      class Game* mGame;
 };
 

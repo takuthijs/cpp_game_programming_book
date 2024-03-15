@@ -1,11 +1,10 @@
 #ifndef SPRITE_COMPONENT_HPP
 #define SPRITE_COMPONENT_HPP
 
-#include "component.hpp"
-#include "actor.hpp"
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_image.h>
-class Actor;
+#include "component.hpp"
+
 class SpriteComponent : public Component
 {
 public:
@@ -27,21 +26,5 @@ protected:
      int mTexWidth;
      int mTexHeight;
 };
-
-SpriteComponent::SpriteComponent(Actor* owner, int drawOrder): 
-Component(owner), 
-mDrawOrder(drawOrder), 
-mTexture(nullptr), 
-mTexWidth(0), 
-mTexHeight(0)
-{
-    owner->AddComponent(this);
-}
-
-SpriteComponent::~SpriteComponent()
-{
-     
-}
-
 
 #endif
