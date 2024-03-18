@@ -19,7 +19,7 @@ public:
      //フレームごとにアニメーションを更新する(componentからオーバーライド)
      void Update(float deltaTime)override;
      //アニメーションに使うテクスチャを設定する
-     void SetAnimTextures(const std::vector<SDL_Texture>& textures);
+     void SetAnimTextures(const std::vector<SDL_Texture*>& textures);
      //アニメーションフレームレートのゲッターセッター
      float GetAnimFPS() const{return mAnimFPS;}
      void SetAnimFPS(float fps){mAnimFPS = fps;}

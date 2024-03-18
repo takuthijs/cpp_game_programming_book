@@ -25,6 +25,9 @@ set(SOURCE_FILES
      src/component.cpp
      src/spriteComponent.cpp
      src/Math.cpp
+     src/animeSpriteComponent.cpp
+     src/BGSpriteComponent.cpp
+     src/ship.cpp
 )
 
 # ヘッダファイルのリストを作成
@@ -34,6 +37,10 @@ set(HEADER_FILES
      include/component.hpp
      include/spriteComponent.hpp
      include/Math.hpp
+     include/animeSpriteComponent.hpp
+     include/BGSpriteComponent.hpp
+     include/ship.hpp
+     
 )
 
 # 実行可能ファイルのビルド設定

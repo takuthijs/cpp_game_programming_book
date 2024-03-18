@@ -2,11 +2,9 @@
 #define GAME_HPP
 
 #include <stdio.h>
-#include <list>
-#include <algorithm>
+#include <string>
 #include <vector>
 #include <SDL2/SDL.h>
-#include <SDL2/SDL_image.h>
 #include <unordered_map>
 
 class Game
@@ -24,13 +22,19 @@ private:
      bool mUpdatingActors;//アクターの更新処理を行なっているかどうか
      std::vector<class Actor*> mActors;//実際に処理を行うアクター
      std::vector<class Actor*> mPendingActors;//追加などを行うアクター、mActorの処理が完了したらmActorsに追加する
-     std::list<class SpriteComponent*> mSprites;//読み込んだ画像
+     std::vector<class SpriteComponent*> mSprites;//読み込んだ画像
+
+     std::unordered_map<std::string, SDL_Texture*> mTextures;
+     class Ship* mShip; //船
 
      void Input();
      void Draw();
 
      void DrawShape(int,int,int,int);//図形を描画する処理
      SDL_Texture* LoadImage(const char* fileName);//イメージをロードする
+
+     void LoadData();
+	void UnloadData();
 
 public:
      Game();
@@ -50,6 +54,8 @@ public:
      //スプライトの追加SpriteComponentのコンストラクターで呼び出し
      void AddSprite(SpriteComponent* sprite);
      void RemoveSprite(SpriteComponent* sprite);
+
+     SDL_Texture* GetTexture(const std::string& fileName);
 };
 
 #endif /* GAME_HPP */

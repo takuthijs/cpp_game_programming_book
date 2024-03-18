@@ -1,9 +1,9 @@
 #include "animeSpriteComponent.hpp"
 
-AnimeSpriteComponent::AnimeSpriteComponent(Actor* owner,int drawOrder = 100):
+AnimeSpriteComponent::AnimeSpriteComponent(Actor* owner,int drawOrder):
 SpriteComponent(owner,drawOrder),
 mCurrFrame(0),
-mAnimFPS(0)
+mAnimFPS(24.0f)
 {
 }
 
@@ -27,4 +27,15 @@ void AnimeSpriteComponent::Update(float deltaTime)
           //現時点のテクスチャを設定する
           SetTexture(mAnimeTextures[static_cast<int>(mCurrFrame)]);
      }
+}
+
+void AnimeSpriteComponent::SetAnimTextures(const std::vector<SDL_Texture*>& textures)
+{
+	mAnimeTextures = textures;
+	if (mAnimeTextures.size() > 0)
+	{
+		// Set the active texture to first frame
+		mCurrFrame = 0.0f;
+		SetTexture(mAnimeTextures[0]);
+	}
 }

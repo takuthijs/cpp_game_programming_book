@@ -1,5 +1,5 @@
-#ifndef BG_SPRITE_COMPONENT.HPP
-#define BG_SPRITE_COMPONENT.HPP
+#ifndef BG_SPRITE_COMPONENT_HPP
+#define BG_SPRITE_COMPONENT_HPP
 
 #include "spriteComponent.hpp"
 

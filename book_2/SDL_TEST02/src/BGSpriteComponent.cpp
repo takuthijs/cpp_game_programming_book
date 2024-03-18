@@ -1,6 +1,6 @@
 #include "BGSpriteComponent.hpp"
 
-BGSpriteComponent::BGSpriteComponent(Actor *owner, int drawOrder = 10)
+BGSpriteComponent::BGSpriteComponent(Actor *owner, int drawOrder)
     : SpriteComponent(owner, drawOrder),
     mScrollSpeed(0.0f)
 {

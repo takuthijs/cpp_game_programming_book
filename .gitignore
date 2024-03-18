@@ -1,3 +1,4 @@
 # ビルドしたものはアップしない
 build/
 /OpenTerminalFromXcode
+*/*/assets/
