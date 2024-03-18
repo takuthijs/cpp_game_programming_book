@@ -20,7 +20,8 @@ SpriteComponent::~SpriteComponent()
 
 void SpriteComponent :: Draw(SDL_Renderer* renderer)
 {
-     if(mTexture){
+     if(mTexture)
+     {
           SDL_Rect r;
           //幅と高さを所有アクターのスケールで拡縮する
           r.w = static_cast<int>(mTexWidth * mOwner->GetScale());
