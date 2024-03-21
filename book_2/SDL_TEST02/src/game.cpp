@@ -7,6 +7,10 @@
 #include "ship.hpp"
 #include "BGSpriteComponent.hpp"
 
+#include <iostream>
+#include <fstream>
+#include <sstream>
+
 // コンストラクタ
 Game::Game() : mIsRunniing(true),
                mFps(60),
@@ -18,6 +22,36 @@ Game::Game() : mIsRunniing(true),
                mPendingActors{}
 {
      // std::cout << "セットアップ開始" << std::endl;
+     // csvデータを読み込み（あとでLoadDataに移動します）
+     std::string path = "cpp_game_programming_book/book_2/SDL_TEST02/assets/MapLayer1.csv";
+     std::ifstream file(path.c_str());
+     std::string line;
+     std::vector<std::vector<std::string>> data;
+
+     while (std::getline(file, line))
+     {
+          std::vector<std::string> row;
+          std::stringstream ss(line);
+          std::string cell;
+
+          while (std::getline(ss, cell, ','))
+          {
+               row.push_back(cell);
+          }
+
+          data.push_back(row);
+     }
+
+     // CSVデータを処理する
+     for (const auto &row : data)
+     {
+          for (const auto &cell : row)
+          {
+               //ここでSDL_RenderCopyExのsrcrectパラメーターを使ってその番号に応じた位置を与えて描画する処理を繰り返す
+               std::cout << cell << ",";
+          }
+          std::cout << std::endl;
+     }
 }
 
 // デストラクタ
@@ -95,7 +129,7 @@ void Game::Input()
           mIsRunniing = false;
      }
 
-     //船の移動
+     // 船の移動
      mShip->ProcessKeyboard(state);
 }
 
@@ -173,8 +207,8 @@ void Game::Update()
 
 void Game::Shutdown()
 {
-     UnloadData();//アクターズ削除
-	IMG_Quit();
+     UnloadData(); // アクターズ削除
+     IMG_Quit();
 
      // レンダラーの破棄
      SDL_DestroyRenderer(mRenderer);
@@ -291,6 +325,7 @@ SDL_Texture *Game::GetTexture(const std::string &fileName)
      else
      {
           // Load from file
+          // ライブラリの関数であるIMG_Loadの引数はchar型にしないといけないのでc_str()を使用する
           SDL_Surface *surf = IMG_Load(fileName.c_str());
           if (!surf)
           {
@@ -314,6 +349,8 @@ SDL_Texture *Game::GetTexture(const std::string &fileName)
 
 void Game::LoadData()
 {
+     // ここで生成したオブジェクトはゲーム終了まで使用するからか、デリートしなくてもいいらしいけど、ほんとはした方いい
+
      // Create player's ship
      mShip = new Ship(this);
      mShip->SetPosition(Vector2(100.0f, 384.0f));
