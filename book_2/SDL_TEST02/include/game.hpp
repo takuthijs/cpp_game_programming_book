@@ -26,6 +26,7 @@ private:
 
      std::unordered_map<std::string, SDL_Texture*> mTextures;
      class Ship* mShip; //船
+     class TileMapComponent* mTileMap;//タイルマップの背景 
 
      void Input();
      void Draw();

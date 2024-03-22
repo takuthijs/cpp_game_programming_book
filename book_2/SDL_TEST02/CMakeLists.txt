@@ -28,6 +28,7 @@ set(SOURCE_FILES
      src/animeSpriteComponent.cpp
      src/BGSpriteComponent.cpp
      src/ship.cpp
+     src/tileMapComponent.cpp
 )
 
 # ヘッダファイルのリストを作成
@@ -40,7 +41,7 @@ set(HEADER_FILES
      include/animeSpriteComponent.hpp
      include/BGSpriteComponent.hpp
      include/ship.hpp
-     
+     include/tileMapComponent.hpp
 )
 
 # 実行可能ファイルのビルド設定

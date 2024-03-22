@@ -6,10 +6,7 @@
 #include "spriteComponent.hpp"
 #include "ship.hpp"
 #include "BGSpriteComponent.hpp"
-
-#include <iostream>
-#include <fstream>
-#include <sstream>
+#include "tileMapComponent.hpp"
 
 // コンストラクタ
 Game::Game() : mIsRunniing(true),
@@ -22,36 +19,6 @@ Game::Game() : mIsRunniing(true),
                mPendingActors{}
 {
      // std::cout << "セットアップ開始" << std::endl;
-     // csvデータを読み込み（あとでLoadDataに移動します）
-     std::string path = "cpp_game_programming_book/book_2/SDL_TEST02/assets/MapLayer1.csv";
-     std::ifstream file(path.c_str());
-     std::string line;
-     std::vector<std::vector<std::string>> data;
-
-     while (std::getline(file, line))
-     {
-          std::vector<std::string> row;
-          std::stringstream ss(line);
-          std::string cell;
-
-          while (std::getline(ss, cell, ','))
-          {
-               row.push_back(cell);
-          }
-
-          data.push_back(row);
-     }
-
-     // CSVデータを処理する
-     for (const auto &row : data)
-     {
-          for (const auto &cell : row)
-          {
-               //ここでSDL_RenderCopyExのsrcrectパラメーターを使ってその番号に応じた位置を与えて描画する処理を繰り返す
-               std::cout << cell << ",";
-          }
-          std::cout << std::endl;
-     }
 }
 
 // デストラクタ
@@ -349,32 +316,37 @@ SDL_Texture *Game::GetTexture(const std::string &fileName)
 
 void Game::LoadData()
 {
-     // ここで生成したオブジェクトはゲーム終了まで使用するからか、デリートしなくてもいいらしいけど、ほんとはした方いい
+     //csvのデータを読み込んでマップを表示
+     Actor *temp = new Actor(this);
+     mTileMap = new TileMapComponent(temp);
+     //タイルマップ画像の読み込み
+     std::vector<SDL_Texture *> bgtexs = {
+         GetTexture("cpp_game_programming_book/book_2/SDL_TEST02/assets/Tiles.png")};
+         mTileMap->SetTexture(bgtexs[0]);
 
      // Create player's ship
-     mShip = new Ship(this);
-     mShip->SetPosition(Vector2(100.0f, 384.0f));
-     mShip->SetScale(1.5f);
+     // mShip = new Ship(this);
+     // mShip->SetPosition(Vector2(100.0f, 384.0f));
+     // mShip->SetScale(1.5f);
 
-     // Create actor for the background (this doesn't need a subclass)
-     Actor *temp = new Actor(this);
-     temp->SetPosition(Vector2(512.0f, 384.0f));
-     // Create the "far back" background
-     BGSpriteComponent *bg = new BGSpriteComponent(temp);
-     bg->SetScreenSize(Vector2(1024.0f, 768.0f));
-     std::vector<SDL_Texture *> bgtexs = {
-         GetTexture("cpp_game_programming_book/book_2/SDL_TEST02/assets/Farback01.png"),
-         GetTexture("cpp_game_programming_book/book_2/SDL_TEST02/assets/Farback02.png")};
-     bg->SetBGTextures(bgtexs);
-     bg->SetScrollSpeed(-100.0f);
-     // Create the closer background
-     bg = new BGSpriteComponent(temp, 50);
-     bg->SetScreenSize(Vector2(1024.0f, 768.0f));
-     bgtexs = {
-         GetTexture("cpp_game_programming_book/book_2/SDL_TEST02/assets/Stars.png"),
-         GetTexture("cpp_game_programming_book/book_2/SDL_TEST02/assets/Stars.png")};
-     bg->SetBGTextures(bgtexs);
-     bg->SetScrollSpeed(-200.0f);
+     // // Create actor for the background (this doesn't need a subclass)
+     // temp->SetPosition(Vector2(512.0f, 384.0f));
+     // // Create the "far back" background
+     // BGSpriteComponent *bg = new BGSpriteComponent(temp);
+     // bg->SetScreenSize(Vector2(1024.0f, 768.0f));
+     // std::vector<SDL_Texture *> bgtexs = {
+     //     GetTexture("cpp_game_programming_book/book_2/SDL_TEST02/assets/Farback01.png"),
+     //     GetTexture("cpp_game_programming_book/book_2/SDL_TEST02/assets/Farback02.png")};
+     // bg->SetBGTextures(bgtexs);
+     // bg->SetScrollSpeed(-100.0f);
+     // // Create the closer background
+     // bg = new BGSpriteComponent(temp, 50);
+     // bg->SetScreenSize(Vector2(1024.0f, 768.0f));
+     // bgtexs = {
+     //     GetTexture("cpp_game_programming_book/book_2/SDL_TEST02/assets/Stars.png"),
+     //     GetTexture("cpp_game_programming_book/book_2/SDL_TEST02/assets/Stars.png")};
+     // bg->SetBGTextures(bgtexs);
+     // bg->SetScrollSpeed(-200.0f);
 }
 
 void Game::UnloadData()
