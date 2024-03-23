@@ -1,6 +1,6 @@
 #include <SDL2/SDL_image.h>
 #include <algorithm>
-
+#include <iostream>
 #include "game.hpp"
 #include "actor.hpp"
 #include "spriteComponent.hpp"
@@ -18,18 +18,18 @@ Game::Game() : mIsRunniing(true),
                mActors{},
                mPendingActors{}
 {
-     // std::cout << "セットアップ開始" << std::endl;
+     std::cout << "セットアップ開始" << std::endl;
 }
 
 // デストラクタ
 Game::~Game()
 {
-     // std::cout << "ゲーム終了" << std::endl;
+     std::cout << "ゲーム終了" << std::endl;
 }
 
 bool Game::Initialize()
 {
-     // std::cout << "Game setup" << std::endl;
+     std::cout << "初期化処理開始" << std::endl;
 
      // SDLの初期化
      if (SDL_Init(SDL_INIT_VIDEO) < 0)
@@ -97,7 +97,7 @@ void Game::Input()
      }
 
      // 船の移動
-     mShip->ProcessKeyboard(state);
+     //mShip->ProcessKeyboard(state);
 }
 
 void Game::Draw()
@@ -316,13 +316,20 @@ SDL_Texture *Game::GetTexture(const std::string &fileName)
 
 void Game::LoadData()
 {
+     std::cout << "LoadData開始" << std::endl;
      //csvのデータを読み込んでマップを表示
      Actor *temp = new Actor(this);
-     mTileMap = new TileMapComponent(temp);
+     mTileMap_1 = new TileMapComponent(temp,10,"cpp_game_programming_book/book_2/SDL_TEST02/assets/MapLayer3.csv");
+     Actor *temp2 = new Actor(this);
+     mTileMap_2 = new TileMapComponent(temp2,30,"cpp_game_programming_book/book_2/SDL_TEST02/assets/MapLayer2.csv");
+     Actor *temp3 = new Actor(this);
+     mTileMap_3 = new TileMapComponent(temp3,40,"cpp_game_programming_book/book_2/SDL_TEST02/assets/MapLayer1.csv");
      //タイルマップ画像の読み込み
      std::vector<SDL_Texture *> bgtexs = {
          GetTexture("cpp_game_programming_book/book_2/SDL_TEST02/assets/Tiles.png")};
-         mTileMap->SetTexture(bgtexs[0]);
+         mTileMap_1->SetTexture(bgtexs[0]);
+         mTileMap_2->SetTexture(bgtexs[0]);
+         mTileMap_3->SetTexture(bgtexs[0]);
 
      // Create player's ship
      // mShip = new Ship(this);

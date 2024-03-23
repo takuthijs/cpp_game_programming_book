@@ -25,8 +25,10 @@ private:
      std::vector<class SpriteComponent*> mSprites;//読み込んだ画像
 
      std::unordered_map<std::string, SDL_Texture*> mTextures;
-     class Ship* mShip; //船
-     class TileMapComponent* mTileMap;//タイルマップの背景 
+     //class Ship* mShip; //船
+     class TileMapComponent* mTileMap_1;//タイルマップの背景 
+     class TileMapComponent* mTileMap_2;//タイルマップの背景 
+     class TileMapComponent* mTileMap_3;//タイルマップの背景 
 
      void Input();
      void Draw();
